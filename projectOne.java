@@ -4,193 +4,188 @@ public class projectOne {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        // Ask for User's name
-        System.out.print("Enter your name: ");
-        String playerName = scanner.nextLine();
+        //ASCII art
+        System.out.println("+==========================================================+");
+        System.out.println("| _____ _____ ____ _____  __   _____  _   _ ____           |");
+        System.out.println("||_   _| ____/ ___|_   _| \\ \\ / / _ \\| | | |  _ \\          |");
+        System.out.println("|  | | |  _| \\___ \\ | |    \\ V / | | | | | | |_) |         |");
+        System.out.println("|  | | | |___ ___) || |     | || |_| | |_| |  _ <          |");
+        System.out.println("| _|_|_|_____|____/ |_|    _|_| \\___/_\\___/|_| \\_\\__ _____ |");
+        System.out.println("|| |/ / \\ | |/ _ \\ \\      / / |   | ____|  _ \\ / ___| ____||");
+        System.out.println("|| ' /|  \\| | | | \\ \\ /\\ / /| |   |  _| | | | | |  _|  _|  |");
+        System.out.println("|| . \\| |\\  | |_| |\\ V  V / | |___| |___| |_| | |_| | |___ |");
+        System.out.println("||_|\\_\\_| \\_|\\___/  \\_/\\_/  |_____|_____|____/ \\____|_____||");
+        System.out.println("+==========================================================+");
 
         // Welcome message
+        System.out.print("Enter your name: ");
+        String playerName = scanner.nextLine();
         System.out.println("Welcome, " + playerName + "... you are about to be tested.");
-        System.out.println("Before you, " + playerName + " are a series of questions and riddles.");
-        System.out.println("Answer the following questions correctly and you may continue on your way.");
-        System.out.println("Answer too many wrong and you have failed.");
+        System.out.println("Answer correctly to proceed, but beware too many wrong answers, and you'll never learn the secrets at the end.");
 
-        // Further prompt to continue
-        System.out.print("Are you ready? Press Enter to proceed... ");
-        scanner.nextLine();
+        // Start Tutorial
+        Quiz quiz = new Quiz(scanner, tutorialQuestions(), tutorialOptions(), tutorialAnswers());
+        startQuiz(scanner, playerName, quiz, "Let us begin with some basics.");
 
-        // Tutorial Prompt
-        System.out.println("Let us begin with some basics. Answer the following questions.");
+        // Start Level One
+        quiz.setQuestions(levelOneQuestions(), levelOneOptions(), levelOneAnswers());
+        startQuiz(scanner, playerName, quiz, "Welcome to Level One. Answer the following riddles.");
 
-        // Creating a Quiz instance and starting the quiz
-        Quiz quiz = new Quiz(scanner); // Pass scanner to the Quiz constructor
-        quiz.tutorialQuiz();
+        //Start Level Two
+        quiz.setQuestions(levelTwoQuestions(), levelTwoOptions(), levelTwoAnswers());
+        startQuiz(scanner, playerName, quiz, "Level Two, don't give up now.");
 
-        // Score display
-        System.out.println("Thanks for playing, " + playerName + ".");
-        System.out.println("Your final score for the first round is: " + quiz.getScore() + "/" + quiz.getTotalQuestions());
+        // Check rewards
+        showRewards(quiz.getScore());
 
-        // Depending on score, the following statements are provided.
-        if (quiz.getScore() < 3) {
-            System.out.println("Oh my, this game will go poorly for you. Continue to the next round? ");
-            scanner.nextLine();
-        } else {
-            System.out.println("Good job. Are you ready to continue to the next round? ");
-            scanner.nextLine();
+        scanner.close();
+    }
+
+    // Utility to start and display score for a quiz round
+    private static void startQuiz(Scanner scanner, String playerName, Quiz quiz, String message) {
+        System.out.println(message);
+        quiz.startQuiz();
+        System.out.println("Good job, " + playerName + ".");
+        System.out.println("Your score: " + quiz.getScore() + "/" + quiz.getTotalQuestions());
+    }
+
+    // Reward display based on score
+    private static void showRewards(int score) {
+        switch (score) {
+            case 5 -> System.out.println("Outstanding! you have managed to excel expectations.");
+            case 4 -> System.out.println("Excellent work! You found a way out of your first room.");
+            case 3 -> System.out.println("Good job. You found a way out of your first room.");
+            case 2 -> System.out.println("Not bad, but you can do better. You made it through, though.");
+            case 1 -> System.out.println("Just a step forward, try again?");
+            case 0 -> System.out.println("How unfortunate. It seems you are trapped. Try again?");
+            default -> System.out.println("Score out of bounds! Please check your scoring logic.");
         }
+    }
 
-        // Start Level One (second set of questions)
-        System.out.println("Welcome to Level One. Answer the following riddles.");
+    // Sample questions and answers
+    private static String[] tutorialQuestions() {
+        return new String[]{
+                "What is the capital of France?",
+                "2 + 2 = what?",
+                "How many states does the USA have?"
+        };
+    }
 
-        levelOne levelOneQuiz = new levelOne(scanner);
-        levelOneQuiz.startLevelOneQuiz();
+    private static String[][] tutorialOptions() {
+        return new String[][]{
+                {"A. London", "B. Paris", "C. Rome", "D. Madrid"},
+                {"A. 3", "B. 4", "C. 5", "D. 6"},
+                {"A. 60", "B. 25", "C. 50", "D. 13"}
+        };
+    }
 
-        // Score display for Level One
-        System.out.println("Your final score for Level One is: " + levelOneQuiz.getScoreOne() + "/" + levelOneQuiz.getTotalQuestionsOne());
+    private static char[] tutorialAnswers() {
+        return new char[]{'B', 'B', 'C'};
+    }
 
-        // Check if the player unlocked any rewards
-        if (levelOneQuiz.getScoreOne() == 2) {
-            System.out.println("Congratulations. Before you a key has dropped at your feet.");
-        } else if (levelOneQuiz.getScoreOne() == 3) {
-            System.out.println("Congratulations. Before you a key has dropped at your feet, as well as a candle.");
-        } else if (levelOneQuiz.getScoreOne() == 4) {
-            System.out.println("Congratulations. Before you, is a key, a candle, and a hint.");
-        } else {
-            System.out.println("How unfortunate for you. It seems you are trapped here. Try again?");
-        }
+    private static String[] levelOneQuestions() {
+        return new String[]{
+                "The more of this there is, the less you see. What is it?",
+                "Turn once, what is out will not get in. I turn again, what is in will not get out. What am I?",
+                "What travels faster, sound or light?",
+                "Which number does every Major League Baseball player wear on April 15?"
+        };
+    }
 
-        scanner.close(); // Close the scanner to avoid resource leaks
+    private static String[][] levelOneOptions() {
+        return new String[][]{
+                {"A. Fog", "B. Darkness", "C. Light", "D. Wind"},
+                {"A. A door key", "B. A wheel", "C. A clock", "D. A lock"},
+                {"A. Sound", "B. Light", "C. Both", "D. Neither"},
+                {"A. 42", "B. 13", "C. 1", "D. 15"}
+        };
+    }
+
+    private static char[] levelOneAnswers() {
+        return new char[]{'B', 'D', 'B', 'A'};
+    }
+
+    private static String[] levelTwoQuestions() {
+        return new String[]{
+                "I can make time stand still, yet everyone keeps moving; What am I?",
+                "Which ancient Greek mathematician is known as the father of Geometry?",
+                "What is the longest river in Asia?",
+                "In the show Friends, what is the name of Ross's pet monkey?",
+                "Which country has the most Olympic medals in men's field hockey?"
+        };
+    }
+
+    private static String[][] levelTwoOptions() {
+        return new String[][]{
+                {"A. Movie", "B. Clock", "C. Photograph", "D. Phone"},
+                {"A. Euclid", "B. Aristotle", "C. Plato", "D. Haley"},
+                {"A. Mekong", "B. Ganges", "C. Indus", "D. Yangtze"},
+                {"A. Mickey", "B. Marcel", "C. Marty", "D. Marshall"},
+                {"A. Japan", "B. India", "C. Canada", "D. U.S.A"}
+        };
+    }
+
+    private static char[] levelTwoAnswers(){
+        return new char[]{'C', 'A', 'D', 'B', 'B'};
     }
 }
 
-// Class for the first quiz
+// Simplified Quiz class for better callback
 class Quiz {
     private int score;
     private int totalQuestions;
-    private Scanner scanner; // Keep the Scanner as a field
+    private Scanner scanner;
+    private String[] questions;
+    private String[][] options;
+    private char[] answers;
 
-    // Sample questions for the quiz
-    private String[] questions = {
-            "What is the capital of France?",
-            "2 + 2 = what?",
-            "How many states does the USA have?"
-    };
-
-    // Sample answers (multiple choice)
-    private String[][] options = {
-            {"A. London", "B. Paris", "C. Rome", "D. Madrid"},
-            {"A. 3", "B. 4", "C. 5", "D. 6"},
-            {"A. 60", "B. 25", "C. 50", "D. 13"}
-    };
-
-    // Correct answers in correspondence with the multiple-choice questions
-    private char[] correctAnswers = {'B', 'B', 'C'};
-
-    // Constructor to initialize scanner and total questions
-    public Quiz(Scanner scanner) {
-        this.score = 0;
-        this.totalQuestions = questions.length;
+    public Quiz(Scanner scanner, String[] questions, String[][] options, char[] answers) {
         this.scanner = scanner;
+        setQuestions(questions, options, answers);
     }
 
-    // Method to start the quiz
-    public void tutorialQuiz() {
+    public void setQuestions(String[] questions, String[][] options, char[] answers) {
+        this.questions = questions;
+        this.options = options;
+        this.answers = answers;
+        this.totalQuestions = questions.length;
+        this.score = 0;
+    }
+
+    public void startQuiz() {
         for (int i = 0; i < questions.length; i++) {
-            System.out.println(questions[i]); // Displays questions
-            for (String option : options[i]) {
-                System.out.println(option); // Displays answer options
+            System.out.println(questions[i]);
+            for (String option : options[i]) System.out.println(option);
+
+            char userAnswer;
+            while (true) {
+                System.out.print("Enter your answer (A/B/C/D): ");
+                userAnswer = scanner.next().toUpperCase().charAt(0);
+
+                // Check if the user input is valid
+                if (userAnswer >= 'A' && userAnswer <= 'D') {
+                    break; // valid input, exit the loop
+                } else {
+                    System.out.println("Invalid input. Please enter A, B, C, or D.");
+                }
             }
 
-            // Get user answer
-            System.out.print("Enter your answer (A/B/C/D): ");
-            char userAnswer = scanner.next().charAt(0);
-
-            // Check if answer is correct
-            if (Character.toUpperCase(userAnswer) == correctAnswers[i]) {
+            // Check if the answer is correct
+            if (userAnswer == answers[i]) {
                 System.out.println("Correct!");
                 score++;
             } else {
-                System.out.println("Incorrect! The correct answer is: " + correctAnswers[i]);
+                System.out.println("Incorrect! The correct answer is: " + answers[i]);
             }
-
-            System.out.println(); // Places blank line between questions
+            System.out.println();
         }
     }
 
-    // Getter for the score
     public int getScore() {
         return score;
     }
 
-    // Getter for the total number of questions
     public int getTotalQuestions() {
         return totalQuestions;
-    }
-}
-
-// Class for Level One (second set of questions)
-class levelOne {
-    private int scoreOne;
-    private int totalQuestionsOne;
-    private Scanner scanner;
-
-    // Sample questions for Level One
-    private String[] questionsOne = {
-            "The more of this there is, the less you see. What is it?",
-            "Turn once, what is out will not get in. I turn again, what is in will not get out. What am I?",
-            "What travels faster, sound or light?",
-            "Which number does every Major League Baseball player wear on April 15?"
-    };
-
-    // Sample answers (multiple choice)
-    private String[][] optionsOne = {
-            {"A. Fog", "B. Darkness", "C. Light", "D. Wind"},
-            {"A. A door key", "B. A wheel", "C. A clock", "D. A lock"},
-            {"A. Sound", "B. Light", "C. Both", "D. Neither"},
-            {"A. 42", "B. 13", "C. 1", "D. 15"}
-    };
-
-    // Correct answers for Level One
-    private char[] correctAnswersOne = {'B', 'D', 'B', 'A'};
-
-    // Constructor to initialize scanner and total questions
-    public levelOne(Scanner scanner) {
-        this.scoreOne = 0;
-        this.totalQuestionsOne = questionsOne.length;
-        this.scanner = scanner;
-    }
-
-    // Method to start Level One quiz
-    public void startLevelOneQuiz() {
-        for (int i = 0; i < questionsOne.length; i++) {
-            System.out.println(questionsOne[i]); // Displays questions
-            for (String option : optionsOne[i]) {
-                System.out.println(option); // Displays answer options
-            }
-
-            // Get user answer
-            System.out.print("Enter your answer (A/B/C/D): ");
-            char userAnswer = scanner.next().charAt(0);
-
-            // Check if answer is correct
-            if (Character.toUpperCase(userAnswer) == correctAnswersOne[i]) {
-                System.out.println("Correct!");
-                scoreOne++;
-            } else {
-                System.out.println("Incorrect! The correct answer is: " + correctAnswersOne[i]);
-            }
-
-            System.out.println(); // Places blank line between questions
-        }
-    }
-
-    // Getter for the score
-    public int getScoreOne() {
-        return scoreOne;
-    }
-
-    // Getter for the total number of questions
-    public int getTotalQuestionsOne() {
-        return totalQuestionsOne;
     }
 }
